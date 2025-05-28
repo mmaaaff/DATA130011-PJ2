@@ -1,0 +1,1 @@
+python train.py --config configs/resnet_cifar10.yaml
