@@ -1,0 +1,67 @@
+# Network configurations
+network:
+  name: "DenseNet"  # Options: DenseNet121, DenseNet169, DenseNet201, DenseNet
+  params:
+    in_channels: 3
+    num_classes: 10
+    growth_rate: 24  # Growth rate (k)
+    block_config: [6, 12, 24, 16]  # Number of layers in each dense block
+    num_init_features: 64  # Number of filters in first convolution
+    bn_size: 4  # Number of bottleneck layers
+    drop_rate: 0.2  # Dropout rate
+    compression: 2  # Compression rate for transition layers (θ)
+    activation: "ReLU"  # Options: ReLU, LeakyReLU, GELU, SiLU(Swish), Mish
+    activation_params:
+      inplace: true    # For ReLU and LeakyReLU
+
+# Training configurations
+training:
+  epochs: 200
+  batch_size: 64
+  num_workers: 4
+  device: "cuda"  # Options: cuda, cpu
+  seed: 42
+
+# Optimizer configurations
+optimizer:
+  type: "Adam"  # Options: Adam, SGD
+  params:
+    lr: 0.001
+    weight_decay: 0.0001
+  scheduler:
+    type: "CosineAnnealingLR"  # Options: CosineAnnealingLR, StepLR, ReduceLROnPlateau
+    params:
+      T_max: 200  # Should match number of epochs
+      eta_min: 0.0001
+
+# Data configurations
+data:
+  dataset: "CIFAR10"
+  root: "./data"
+  train_transforms:
+    - name: "RandomCrop"
+      params:
+        size: 32
+        padding: 4
+    - name: "RandomHorizontalFlip"
+      params:
+        p: 0.5
+    - name: "ToTensor"
+    - name: "Normalize"
+      params:
+        mean: [0.4914, 0.4822, 0.4465]
+        std: [0.2023, 0.1994, 0.2010]
+  
+  val_transforms:
+    - name: "ToTensor"
+    - name: "Normalize"
+      params:
+        mean: [0.4914, 0.4822, 0.4465]
+        std: [0.2023, 0.1994, 0.2010]
+
+# Logging configurations
+logging:
+  save_dir: "./experiments"
+  save_freq: 10  # Save checkpoint every N epochs
+  log_freq: 100  # Log every N steps
+  tensorboard: true 

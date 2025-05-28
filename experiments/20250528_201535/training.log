@@ -1,0 +1,84 @@
+Starting training at 20250528_201535
+Saving outputs to experiments\20250528_201535
+
+Configuration:
+data:
+  dataset: CIFAR10
+  root: ./data
+  train_transforms:
+  - name: RandomCrop
+    params:
+      padding: 4
+      size: 32
+  - name: RandomHorizontalFlip
+    params:
+      p: 0.5
+  - name: ToTensor
+  - name: Normalize
+    params:
+      mean:
+      - 0.4914
+      - 0.4822
+      - 0.4465
+      std:
+      - 0.2023
+      - 0.1994
+      - 0.201
+  val_transforms:
+  - name: ToTensor
+  - name: Normalize
+    params:
+      mean:
+      - 0.4914
+      - 0.4822
+      - 0.4465
+      std:
+      - 0.2023
+      - 0.1994
+      - 0.201
+logging:
+  log_freq: 100
+  save_dir: ./experiments
+  save_freq: 10
+  tensorboard: true
+network:
+  name: DenseNet
+  params:
+    activation: ReLU
+    activation_params:
+      inplace: true
+    block_config:
+    - 6
+    - 12
+    - 24
+    - 16
+    bn_size: 4
+    compression: 2
+    drop_rate: 0.2
+    growth_rate: 24
+    in_channels: 3
+    num_classes: 10
+    num_init_features: 64
+optimizer:
+  params:
+    lr: 0.001
+    weight_decay: 0.0001
+  scheduler:
+    params:
+      T_max: 200
+      eta_min: 0.0001
+    type: CosineAnnealingLR
+  type: Adam
+training:
+  batch_size: 64
+  device: cuda
+  epochs: 200
+  num_workers: 4
+  seed: 42
+
+
+Data will be downloaded to: D:\files\2025spring\homework\DL\PJ2\codes\data
+Preparing CIFAR10 dataset...
+Dataset downloaded to D:\files\2025spring\homework\DL\PJ2\codes\data
+
+Error occurred during training: unhashable type: 'dict'
