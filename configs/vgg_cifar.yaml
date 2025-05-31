@@ -1,37 +1,29 @@
 # Network configurations
 network:
-  type: "resnet"
-  name: "ResNet50"  # Options: ResNet18 (BasicBlock), ResNet34 (BasicBlock), ResNet50 (Bottleneck)
+  name: "VGG_A_BatchNorm"  # Options: DenseNet121, DenseNet169, DenseNet201, DenseNet
   params:
-    in_channels: 3
+    inp_ch: 3
     num_classes: 10
-    base_channels: 64
-    dropout_rate: 0.2
-    zero_init_residual: false
-    activation: "GELU"  # Options: ReLU, LeakyReLU, GELU, SiLU(Swish), Mish
-    activation_params:  # Parameters for the activation function
-      # inplace: true    # For ReLU and LeakyReLU
-      # negative_slope: 0.01  # For LeakyReLU
-
+    
 # Training configurations
 training:
   epochs: 50
   batch_size: 256
   num_workers: 4
-  device: "cuda:4"  # Options: cuda, cpu
+  device: "cuda:0"  # Options: cuda, cpu #note
   seed: 42
 
 # Optimizer configurations
 optimizer:
   type: "Adam"  # Options: Adam, SGD
   params:
-    lr: 0.001
+    lr: 0.0001  #note
     weight_decay: 0.0001
-  scheduler:
-    type: "CosineAnnealingLR"  # Options: CosineAnnealingLR, StepLR, ReduceLROnPlateau
-    params:
-      T_max: 50  # Should match number of epochs
-      eta_min: 0.0001
+  # scheduler:
+  #   type: "CosineAnnealingLR"  # Options: CosineAnnealingLR, StepLR, ReduceLROnPlateau
+  #   params:
+  #     T_max: 50  # Should match number of epochs
+  #     eta_min: 0.0001
 
 # Data configurations
 data:
@@ -62,5 +54,5 @@ data:
 logging:
   save_dir: "./runs"
   save_freq: 10  # Save checkpoint every N epochs
-  log_freq: 100  # Log every N steps
+  log_freq: 30  # Log every N steps
   tensorboard: true 

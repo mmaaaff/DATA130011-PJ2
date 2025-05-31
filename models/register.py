@@ -1,5 +1,5 @@
 from .resnet import ResNet18, ResNet34, ResNet50
-from .vgg import VGG_A, VGG_A_Dropout, VGG_A_Light
+from .vgg import VGG_A, VGG_A_Dropout, VGG_A_Light, VGG_A_BatchNorm
 from .densenet import DenseNet121, DenseNet169, DenseNet201, DenseNet
 
 # Model factory
@@ -11,6 +11,7 @@ def create_model(model_name, **kwargs):
         'VGG_A': VGG_A,
         'VGG_A_Dropout': VGG_A_Dropout,
         'VGG_A_Light': VGG_A_Light,
+        'VGG_A_BatchNorm': VGG_A_BatchNorm,
         'DenseNet121': DenseNet121,
         'DenseNet169': DenseNet169,
         'DenseNet201': DenseNet201,

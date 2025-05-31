@@ -97,6 +97,38 @@ def get_optimizer(model, config):
     
     return optimizer, scheduler
 
+def add_regularization(model, loss, reg_type='L2', strength=0.0001):
+    """
+    添加 L1 或 L2 正则化到损失函数
+    
+    Args:
+        model: 神经网络模型
+        loss: 原始损失值
+        reg_type: 正则化类型 ('L1' 或 'L2')
+        strength: 正则化强度
+    
+    Returns:
+        添加了正则化项的损失值
+    """
+    if reg_type is None or strength == 0:
+        return loss
+        
+    l1_regularization = torch.tensor(0., requires_grad=True).to(loss.device)
+    l2_regularization = torch.tensor(0., requires_grad=True).to(loss.device)
+    
+    for name, param in model.named_parameters():
+        if 'weight' in name:  # 只对权重应用正则化，不包括偏置项
+            if reg_type == 'L1':
+                l1_regularization = l1_regularization + torch.norm(param, 1)
+            elif reg_type == 'L2':
+                l2_regularization = l2_regularization + torch.norm(param, 2)
+    
+    if reg_type == 'L1':
+        loss = loss + strength * l1_regularization
+    elif reg_type == 'L2':
+        loss = loss + strength * l2_regularization
+        
+    return loss
 
 def train_epoch(model, train_loader, criterion, optimizer, device, epoch, writer, config):
     model.train()
@@ -104,12 +136,22 @@ def train_epoch(model, train_loader, criterion, optimizer, device, epoch, writer
     correct = 0
     total = 0
     
+    # 获取正则化配置
+    reg_config = config['optimizer'].get('regularization', {})
+    reg_type = reg_config.get('type', None)
+    reg_strength = reg_config.get('strength', 0.0001)
+    
     for batch_idx, (inputs, targets) in enumerate(train_loader):
         inputs, targets = inputs.to(device), targets.to(device)
         
         optimizer.zero_grad()
         outputs = model(inputs)
         loss = criterion(outputs, targets)
+        
+        # 添加正则化
+        if reg_type != 'None':
+            loss = add_regularization(model, loss, reg_type, reg_strength)
+        
         loss.backward()
         optimizer.step()
         

@@ -5,29 +5,32 @@ network:
     in_channels: 3
     num_classes: 10
     growth_rate: 24  # Growth rate (k)
-    block_config: [6, 12, 24, 16]  # Number of layers in each dense block
+    block_config: [6, 12, 48, 32]  # Number of layers in each dense block
     num_init_features: 64  # Number of filters in first convolution
     bn_size: 4  # Number of bottleneck layers
     drop_rate: 0.2  # Dropout rate
     compression: 2  # Compression rate for transition layers (θ)
     activation: "ReLU"  # Options: ReLU, LeakyReLU, GELU, SiLU(Swish), Mish
-    activation_params:
-      inplace: true    # For ReLU and LeakyReLU
+    # activation_params:
+    #   inplace: true    # For ReLU and LeakyReLU
 
 # Training configurations
 training:
-  epochs: 50
-  batch_size: 128
+  epochs: 200
+  batch_size: 256
   num_workers: 4
-  device: "cuda"  # Options: cuda, cpu
+  device: "cuda:0"  # Options: cuda, cpu
   seed: 42
 
 # Optimizer configurations
 optimizer:
-  type: "Adam"  # Options: Adam, SGD
+  type: "SGD"  # Options: Adam, SGD
   params:
-    lr: 0.003
-    weight_decay: 0.0001
+    lr: 0.001
+    # weight_decay: 0.0001  # L2 正则化强度
+  regularization:
+    type: "None"  # Options: L1, L2, None
+    # strength: 0.0001  # 正则化强度
   scheduler:
     type: "CosineAnnealingLR"  # Options: CosineAnnealingLR, StepLR, ReduceLROnPlateau
     params:
@@ -46,11 +49,31 @@ data:
     - name: "RandomHorizontalFlip"
       params:
         p: 0.5
+    - name: "ColorJitter"
+      params:
+        brightness: 0.2
+        contrast: 0.2
+        saturation: 0.2
+        hue: 0.1
+    - name: "RandomRotation"
+      params:
+        degrees: 15
+    - name: "RandomAffine"
+      params:
+        degrees: 0
+        translate: [0.1, 0.1]
+        scale: [0.9, 1.1]
     - name: "ToTensor"
     - name: "Normalize"
       params:
         mean: [0.4914, 0.4822, 0.4465]
         std: [0.2023, 0.1994, 0.2010]
+    - name: "RandomErasing"
+      params:
+        p: 0.2
+        scale: [0.02, 0.33]
+        ratio: [0.3, 3.3]
+        value: 0
   
   val_transforms:
     - name: "ToTensor"
@@ -63,5 +86,5 @@ data:
 logging:
   save_dir: "./runs"
   save_freq: 10  # Save checkpoint every N epochs
-  log_freq: 20  # Log every N steps
+  log_freq: 100  # Log every N steps
   tensorboard: true 

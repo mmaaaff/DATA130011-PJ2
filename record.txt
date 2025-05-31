@@ -1,0 +1,36 @@
+# 202741
+densenet-121 50epochs
+
+# 045627
+densenet-264
+densenet-201
+
+# 062754
+densenet-201 augment
+
+# 125953
+resnet50
+densenet-201 augment gelu
+
+# 023837
+vgg-a 50 epoch lr=0.001
+vgg-a 50 epoch lr=0.0005
+vgg-a 50 epoch lr=0.003
+vgg-a 50 epoch lr=0.0001
+
+# 024449
+vgg-a-bn 50 epoch lr=0.001
+vgg-a-bn 50 epoch lr=0.0005
+vgg-a-bn 50 epoch lr=0.003
+vgg-a-bn 50 epoch lr=0.0001
+
+# 183018
+densenet-201 augment l2 0.0001
+densenet-201 augment l1 0.0001
+densenet-201 augment SGD
+
+# 203543
+resnet18 ReLU 50-epochs
+resnet50 ReLU 50-epochs
+resnet18 GELU 50-epochs
+resnet50 GELU 50-epochs
