@@ -1,1 +1,3 @@
-python test.py --weights "$WEIGHTS_PATH" --config "$CONFIG_PATH" 
+python test.py \
+--weights weights/path \
+--config config/path 
