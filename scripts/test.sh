@@ -1,0 +1,1 @@
+python test.py --weights "$WEIGHTS_PATH" --config "$CONFIG_PATH" 
